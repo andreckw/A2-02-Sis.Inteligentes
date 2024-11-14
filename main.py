@@ -2,9 +2,13 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
+def funcaoLinear(x):
+    return 100 * x + 20
+
+
 df = pd.read_csv("udemy_courses_dataset.csv")
 
-nEpocas = 1000
+nEpocas = 100
 q = 100
 # taxa de aprendizado
 eta = 0.5
@@ -62,8 +66,11 @@ d = np.array(df.iloc[:q, [4]]).transpose()[0]
 b = 1
 # Matriz de entrada
 W1 = np.random.random((N, m + 1))
+# Matriz escondidas
+W2 = np.random.random((N, m))
+W3 = np.random.random((N, m -1))
 # Matriz de saída
-W2 = np.random.random((L, N + 1))
+W4 = np.random.random((L, N + 1))
 
 E = np.zeros(q)
 etm = np.zeros(nEpocas)
@@ -79,21 +86,35 @@ for i in range(nEpocas):
         Xb = np.hstack((b, X[:, j]))
         
         o1 = np.tanh(W1.dot(Xb))
-        
         o1b = np.insert(o1, 0, b)
         
-        Y = np.tanh(W2.dot(o1b))
+        o2 = np.tanh(W2.dot(o1b))
         
+        o2b = np.insert(o2, 0, b)
+        o3 = np.tanh(W3.dot(o2b))
+        
+        o3b = np.insert(o3, 0, b)
+        print(o3b)
+        Y = funcaoLinear(W4.dot(o3b))
         e = d[j] - Y
         
         E[j] = (e.dot(e).transpose()) / 2
         
-        delta2 = np.diag(e).dot((1 - Y*Y))
+        delta4 = np.diag(e).dot((1 - Y*Y))
+        vdelta4 = (W4.transpose()).dot(delta4)
+        
+        delta3 = np.diag(1 - o3b * o3b).dot(vdelta4)
+        vdelta3 = (W3.transpose()).dot(delta3)
+        
+        delta2 = np.diag(1 - o2b * o2b).dot(vdelta3)
         vdelta2 = (W2.transpose()).dot(delta2)
-        delta1 = np.diag(1 - o1b*o1b).dot(vdelta2)
+        
+        delta1 = np.diag(1 - o1b * o1b).dot(vdelta2)
         
         W1 = W1 + eta * (np.outer(delta1[1:], Xb))
-        W2 = W2 + eta * (np.outer(delta2, o1b))
+        W2 = W2 + eta * (np.outer(delta2[1:], o1b))
+        W3 = W3 + eta * (np.outer(delta3[1:], o2b))
+        W4 = W4 + eta * (np.outer(delta4, o3b))
         
         print(Y, d[j])
         
