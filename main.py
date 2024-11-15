@@ -11,7 +11,7 @@ df = pd.read_csv("udemy_courses_dataset.csv")
 nEpocas = 100
 q = 100
 # taxa de aprendizado
-eta = 0.5
+eta = 0.01
 
 # 4 neuronios de entrada (isPaid, subject, level, contentDuration)
 m = 4
@@ -67,8 +67,8 @@ b = 1
 # Matriz de entrada
 W1 = np.random.random((N, m + 1))
 # Matriz escondidas
-W2 = np.random.random((N, m))
-W3 = np.random.random((N, m -1))
+W2 = np.random.random((L, N + 1))
+W3 = np.random.random((N, m + 1))
 # Matriz de saída
 W4 = np.random.random((L, N + 1))
 
@@ -94,7 +94,6 @@ for i in range(nEpocas):
         o3 = np.tanh(W3.dot(o2b))
         
         o3b = np.insert(o3, 0, b)
-        print(o3b)
         Y = funcaoLinear(W4.dot(o3b))
         e = d[j] - Y
         
@@ -105,7 +104,7 @@ for i in range(nEpocas):
         
         delta3 = np.diag(1 - o3b * o3b).dot(vdelta4)
         vdelta3 = (W3.transpose()).dot(delta3)
-        
+
         delta2 = np.diag(1 - o2b * o2b).dot(vdelta3)
         vdelta2 = (W2.transpose()).dot(delta2)
         
