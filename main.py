@@ -21,7 +21,7 @@ df = pd.read_csv("banana_quality.csv")
 nEpocas = 100
 q = 200
 # taxa de aprendizado
-eta = 0.1
+eta = 0.2
 
 # neuronios de entrada
 m = 7
@@ -42,9 +42,9 @@ a = np.array(df.iloc[:q, [7]]).transpose()[0]
 d = []
 for k in a:
     if (k == "Good"):
-        d.append(1)
-    else:
         d.append(-1)
+    else:
+        d.append(1)
 
 # bias
 b = 1
@@ -72,15 +72,15 @@ for i in range(nEpocas):
         o1 = np.tanh(W1.dot(Xb))
         o1b = np.insert(o1, 0, b)
 
-        o2 = funcaorelu(W2.dot(o1b))
+        o2 = sigmoid(W2.dot(o1b))
         o2b = np.insert(o2, 0, b)
 
         o3 = sigmoid(W3.dot(o2b))
         o3b = np.insert(o3, 0, b)
-
-        Y = np.tanh(W4.dot(o3b))
+        Y = sigmoid(W4.dot(o3b))
 
         e = d[j] - Y
+        print(d[j], Y)
         E[j] = (e.dot(e).transpose()) / 2
         
         delta4 = np.diag(e).dot((1 - Y * Y))
@@ -118,13 +118,12 @@ for i in range(q):
     o1 = np.tanh(W1.dot(Xb))
     o1b = np.insert(o1, 0, b)
 
-    o2 = funcaorelu(W2.dot(o1b))
+    o2 = sigmoid(W2.dot(o1b))
     o2b = np.insert(o2, 0, b)
 
     o3 = sigmoid(W3.dot(o2b))
     o3b = np.insert(o3, 0, b)
-
-    Y = np.tanh(W4.dot(o3b))
+    Y = sigmoid(W4.dot(o3b))
 
     Error_Test[i] = d[i] - Y
 
