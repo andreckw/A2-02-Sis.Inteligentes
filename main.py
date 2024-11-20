@@ -80,7 +80,6 @@ for i in range(nEpocas):
         Y = sigmoid(W4.dot(o3b))
 
         e = d[j] - Y
-        print(d[j], Y)
         E[j] = (e.dot(e).transpose()) / 2
         
         delta4 = np.diag(e).dot((1 - Y * Y))
