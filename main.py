@@ -24,7 +24,7 @@ q = 200
 eta = 0.2
 
 # neuronios de entrada
-m = 7
+m = 5
 # neuronios escondida
 N = 3
 # 1 neuronio de saída
@@ -59,7 +59,7 @@ W4 = np.random.random((L, N + 1))
 E = np.zeros(q)
 etm = np.zeros(nEpocas)
 
-X = np.vstack((size, weight, sweetnes, softnes, harvest, ripness, acidity))
+X = np.vstack((size, weight, sweetnes, softnes, ripness))
 
 
 # TREINAMENTO
