@@ -19,9 +19,9 @@ def sigmoid(x):
 df = pd.read_csv("banana_quality.csv")
 
 nEpocas = 100
-q = 200
+q = 100
 # taxa de aprendizado
-eta = 0.2
+eta = 0.01
 
 # neuronios de entrada
 m = 5
@@ -40,12 +40,12 @@ a = np.array(df.iloc[:q, [7]]).transpose()[0]
 d = []
 for k in a:
     if (k == "Good"):
-        d.append(-1)
+        d.append(0)
     else:
         d.append(1)
 
 # bias
-b = 1
+b = 2
 # Matriz de entrada
 W1 = np.random.random((N, m + 1))
 # Matriz escondidas
@@ -67,7 +67,7 @@ for i in range(nEpocas):
     for j in range(q):
         Xb = np.hstack((b, X[:, j]))
         
-        o1 = np.tanh(W1.dot(Xb))
+        o1 = sigmoid(W1.dot(Xb))
         o1b = np.insert(o1, 0, b)
 
         o2 = sigmoid(W2.dot(o1b))
@@ -75,6 +75,7 @@ for i in range(nEpocas):
 
         o3 = sigmoid(W3.dot(o2b))
         o3b = np.insert(o3, 0, b)
+
         Y = sigmoid(W4.dot(o3b))
 
         e = d[j] - Y
@@ -112,7 +113,7 @@ Error_Test = np.zeros(q)
 for i in range(q):
     Xb = np.hstack((b, X[:, i]))
         
-    o1 = np.tanh(W1.dot(Xb))
+    o1 = sigmoid(W1.dot(Xb))
     o1b = np.insert(o1, 0, b)
 
     o2 = sigmoid(W2.dot(o1b))
@@ -120,9 +121,9 @@ for i in range(q):
 
     o3 = sigmoid(W3.dot(o2b))
     o3b = np.insert(o3, 0, b)
-    Y = sigmoid(W4.dot(o3b))
 
+    Y = sigmoid(W4.dot(o3b))
     Error_Test[i] = d[i] - Y
 
-print(Error_Test)
+print(np.round(Error_Test), d, sep="\n")
 print(np.round(Error_Test) - d)
